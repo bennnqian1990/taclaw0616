@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAClaw及企微ChatBOT建设进展汇报 20260616</title>
+<meta name="description" content="TAClaw底座与企微ChatBOT建设进展汇报，涵盖平台定位、建设进展、未来畅想及问题风险。">
+<meta property="og:title" content="TAClaw及企微ChatBOT建设进展汇报 20260616">
+<meta property="og:description" content="TAClaw底座与企微ChatBOT建设进展汇报，涵盖平台定位、建设进展、未来畅想及问题风险。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="deploy0616/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing: border-box; }
+
+  :root {
+    --bg-primary: #F5F6FA; --bg-white: #FFFFFF; --bg-section: #F0F2F8;
+    --accent-blue: #3B6BF5; --accent-blue-light: #EBF0FF;
+    --accent-green: #22C55E; --accent-green-light: #ECFDF5;
+    --accent-orange: #F59E0B; --accent-orange-light: #FFF8E6;
+    --accent-red: #EF4444; --accent-red-light: #FEF2F2;
+    --accent-purple: #8B5CF6; --accent-purple-light: #F3F0FF;
+    --text-primary: #1A1D2E; --text-secondary: #4B5072; --text-muted: #8890AB;
+    --border-color: #E5E7F0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06); --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --radius-sm: 10px; --radius-md: 14px; --radius-lg: 18px;
+  }
+
+  body {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-primary); color: var(--text-primary); line-height: 1.7;
+    -webkit-font-smoothing: antialiased; min-height: 100vh;
+  }
+  .container { max-width: 780px; margin: 0 auto; padding: 0 20px; }
+
+  .header { padding: 52px 0 40px; text-align: center; }
+  .header-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--bg-section); color: var(--accent-blue);
+    font-size: 11.5px; font-weight: 600; padding: 6px 18px;
+    border-radius: 24px; margin-bottom: 18px; letter-spacing: 1px;
+  }
+  .header-badge .dot {
+    width: 6px; height: 6px; background: var(--accent-blue);
+    border-radius: 50%; animation: pulse-dot 2s infinite;
+  }
+  @keyframes pulse-dot { 0%, 100% { opacity:1; } 50% { opacity:0.4; } }
+  .header h1 { font-size: 26px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; letter-spacing: -0.5px; }
+  .header-date { font-size: 13.5px; color: var(--text-muted); font-weight: 400; letter-spacing: 0.5px; }
+  .header-line { width: 60px; height: 3px; margin: 20px auto 0; background: var(--accent-blue); border-radius: 2px; opacity: 0.6; }
+
+  .section { margin-bottom: 28px; }
+  .section-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
+    padding-bottom: 14px; border-bottom: 2px solid var(--border-color);
+  }
+  .section-icon {
+    width: 38px; height: 38px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
+  }
+  .section-icon.blue { background: var(--accent-blue-light); }
+  .section-icon.green { background: var(--accent-green-light); }
+  .section-icon.orange { background: var(--accent-orange-light); }
+  .section-icon.red { background: var(--accent-red-light); }
+  .section-icon.purple { background: var(--accent-purple-light); }
+  .section-title { font-size: 17px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.2px; }
+
+  .card {
+    background: var(--bg-white); border-radius: var(--radius-lg);
+    padding: 26px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); margin-bottom: 16px;
+  }
+  .goal-highlight {
+    background: linear-gradient(135deg, var(--accent-blue-light) 0%, #E8EDFF 100%);
+    border-left: 3px solid var(--accent-blue); padding: 18px 20px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 13.5px; color: var(--text-secondary); line-height: 1.95;
+  }
+  .goal-highlight strong { color: var(--text-primary); font-weight: 600; }
+
+  .sub-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; margin-top: 22px; }
+  .sub-header:first-child { margin-top: 0; }
+  .plan-sub-title { font-size: 16px; font-weight: 700; padding: 5px 18px; border-radius: 10px; letter-spacing: 0.3px; }
+  .plan-sub-title.blue { background: var(--accent-blue-light); color: var(--accent-blue); }
+  .plan-sub-title.green { background: var(--accent-green-light); color: #15803D; }
+  .plan-sub-title.purple { background: var(--accent-purple-light); color: #7C3AED; }
+
+  .progress-item { display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+  .progress-item:last-child { margin-bottom: 0; }
+  .progress-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 8px; flex-shrink: 0; }
+  .progress-dot.blue { background: var(--accent-blue); }
+  .progress-dot.green { background: var(--accent-green); }
+  .progress-dot.purple { background: var(--accent-purple); }
+  .progress-dot.orange { background: var(--accent-orange); }
+  .progress-content { flex: 1; }
+  .progress-content p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.85; }
+  .progress-content strong { color: var(--text-primary); font-weight: 600; }
+
+  .indent-block { margin-left: 22px; padding-left: 18px; border-left: 2px solid var(--border-color); margin-top: 12px; }
+
+  .num-block { padding: 12px 0 6px 0; }
+  .num-block p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.85; margin-bottom: 10px; }
+  .num-block p strong { color: var(--text-primary); font-weight: 600; }
+
+  .chart-wrap { margin-top: 18px; }
+  .chart-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; }
+  .chart-canvas-wrap { position: relative; height: 280px; width: 100%; }
+
+  .table-wrapper {
+    overflow-x: auto; margin-top: 16px; border-radius: var(--radius-md);
+    border: 1px solid var(--border-color); background: var(--bg-white);
+  }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .data-table thead th {
+    background: #2563EB; color: #fff; font-weight: 600;
+    padding: 10px 12px; text-align: center; white-space: nowrap; font-size: 11.5px; letter-spacing: 0.2px;
+  }
+  .data-table thead th:first-child { text-align: left; }
+  .data-table tbody td {
+    padding: 9px 12px; text-align: center; border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary); font-size: 12px;
+  }
+  .data-table tbody td:first-child { text-align: left; font-weight: 500; color: var(--text-primary); white-space: nowrap; }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:hover { background: var(--bg-section); }
+  .data-table tbody tr.total-row { background: var(--accent-blue-light); font-weight: 600; }
+  .data-table tbody tr.total-row td { color: var(--accent-blue); }
+
+  .top-table-wrapper {
+    overflow-x: auto; margin-top: 16px; border-radius: var(--radius-md);
+    border: 1px solid var(--border-color); background: var(--bg-white);
+  }
+  .top-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .top-table thead th {
+    background: #7C3AED; color: #fff; font-weight: 600;
+    padding: 10px 12px; text-align: center; white-space: nowrap; font-size: 11.5px; letter-spacing: 0.2px;
+  }
+  .top-table thead th:first-child { text-align: left; }
+  .top-table tbody td {
+    padding: 9px 12px; text-align: center; border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary); font-size: 12px;
+  }
+  .top-table tbody td:first-child { text-align: left; font-weight: 500; color: var(--text-primary); }
+  .top-table tbody tr:last-child td { border-bottom: none; }
+  .top-table tbody tr:hover { background: var(--bg-section); }
+
+  .future-card {
+    background: linear-gradient(135deg, #F3F0FF 0%, #EBF0FF 100%);
+    border-radius: var(--radius-md); padding: 20px 22px; margin-top: 16px;
+    border: 1px solid rgba(139,92,246,0.15);
+  }
+  .future-card h4 { font-size: 14px; font-weight: 600; color: var(--accent-purple); margin-bottom: 10px; }
+  .future-card p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.85; }
+
+  .risk-item {
+    display: flex; gap: 14px; margin-bottom: 14px; padding: 16px 18px;
+    border-radius: var(--radius-sm); background: var(--accent-red-light);
+    border-left: 3px solid var(--accent-red);
+  }
+  .risk-item:last-child { margin-bottom: 0; }
+  .risk-item p { font-size: 13px; color: #991B1B; line-height: 1.75; }
+
+  .footer { text-align: center; padding: 36px 0 52px; font-size: 12px; color: var(--text-muted); }
+  .footer-divider { width: 60px; height: 3px; background: var(--border-color); border-radius: 2px; margin: 0 auto 14px; }
+
+  .fade-in { opacity: 0; transform: translateY(20px); animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+  .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; } .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; } .delay-6 { animation-delay: 0.6s; }
+  .delay-7 { animation-delay: 0.7s; }
+
+  .note-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--accent-orange-light); color: #B45309;
+    font-size: 11px; font-weight: 500; padding: 4px 10px;
+    border-radius: 6px; margin-top: 10px;
+  }
+
+  .img-zoom-wrap {
+    margin-top: 22px; border-radius: var(--radius-md); overflow: hidden;
+    border: 1px solid var(--border-color); cursor: zoom-in; position: relative;
+  }
+  .img-zoom-hint {
+    position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.5);
+    color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 8px;
+    pointer-events: none; opacity: 0; transition: opacity 0.25s;
+  }
+  .img-zoom-wrap:hover .img-zoom-hint { opacity: 1; }
+
+  .lightbox-overlay {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(15,17,25,0.88); cursor: zoom-out;
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  .lightbox-overlay.active { display: flex; }
+  .lightbox-overlay img {
+    max-width: 95%; max-height: 95%; border-radius: 12px;
+    box-shadow: 0 20px 80px rgba(0,0,0,0.5);
+    animation: lbZoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes lbZoomIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .lightbox-close {
+    position: absolute; top: 24px; right: 28px; width: 40px; height: 40px;
+    border-radius: 50%; background: rgba(255,255,255,0.1); border: none;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 20px; transition: all 0.2s;
+  }
+  .lightbox-close:hover { background: rgba(255,255,255,0.2); }
+
+  @media (max-width: 600px) {
+    .header h1 { font-size: 22px; } .card { padding: 20px; }
+    .data-table { font-size: 11px; }
+    .data-table thead th, .data-table tbody td { padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+<script>
+  function openLightbox(el) {
+    var src = el.querySelector('img').src;
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>
+
+<div class="container">
+
+  <div class="header fade-in">
+    <div class="header-badge"><span class="dot"></span> PROGRESS REPORT</div>
+    <h1>TAClaw及企微ChatBOT建设进展汇报</h1>
+    <div class="header-date">截至 2026.06.16</div>
+    <div class="header-line"></div>
+  </div>
+
+  <!-- 一、平台定位 -->
+  <div class="section fade-in delay-2">
+    <div class="section-header">
+      <div class="section-icon blue">&#127919;</div>
+      <div class="section-title">平台定位</div>
+    </div>
+    <div class="card">
+      <div class="goal-highlight">
+        <strong>让投顾定义自己的财富管理操作系统，提升投顾专业能力与展业效率。</strong>
+      </div>
+      <div style="margin-top: 16px;">
+        <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.95;">
+        以提高财富管理专业能力与展业效率为第一性原理，构建<strong>华泰专属版龙虾TAClaw</strong>，将公司各项数据与工具解构成为<strong>Skills</strong>，支持投顾灵活调用、自主组合Skills定制工作流，让每个投顾定义自己的操作系统，实现投顾专业能力提升，服务提质增效。
+        </p>
+        <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.95; margin-top: 12px;">
+        同时，基于投顾服务触达最后一公里<strong>企微平台</strong>，构建<strong>企微ChatBOT</strong>，打造自动化执行能力及智能聊天能力，大幅提升客户服务效率。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 二、建设规划 -->
+  <div class="section fade-in delay-3">
+    <div class="section-header">
+      <div class="section-icon orange">&#128208;</div>
+      <div class="section-title">建设规划</div>
+    </div>
+    <div class="card">
+      <div class="img-zoom-wrap" onclick="openLightbox(this)">
+        <img src="deploy0616/img_build_plan.png" alt="建设规划" style="width: 100%; display: block;">
+        <span class="img-zoom-hint">点击放大</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 三、里程碑节点 -->
+  <div class="section fade-in delay-3">
+    <div class="section-header">
+      <div class="section-icon green">&#128338;</div>
+      <div class="section-title">里程碑节点</div>
+    </div>
+    <div class="card">
+      <div class="img-zoom-wrap" onclick="openLightbox(this)">
+        <img src="deploy0616/img_milestone.png" alt="里程碑节点" style="width: 100%; display: block;">
+        <span class="img-zoom-hint">点击放大</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 建设进展 &mdash; TAClaw建设 -->
+  <div class="section fade-in delay-4">
+    <div class="section-header">
+      <div class="section-icon green">&#128640;</div>
+      <div class="section-title">建设进展 &mdash; TAClaw建设（提升投顾专业能力）</div>
+    </div>
+
+    <div class="sub-header">
+      <span class="plan-sub-title blue">TAClaw底座</span>
+    </div>
+    <div class="card">
+      <div class="progress-item">
+        <div class="progress-dot blue"></div>
+        <div class="progress-content">
+          <p>TAClaw底座完成灰度发布，启动投顾开放试用。基于公司OPENCLAW框架，定制TAClaw底座（<strong>15项定制化开发</strong>），于5月底完成TAClaw灰度上线，包含<strong>交互会话平台、Skill广场、自动化任务中心</strong>三大模块，并接入公司本地推理类与多模态大模型，持续在灰度环境经过多轮验收优化，于昨晚放开<strong>7名投顾</strong>试用。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-header">
+      <span class="plan-sub-title green">原子Skills建设</span>
+    </div>
+    <div class="card">
+      <div class="progress-item">
+        <div class="progress-dot green"></div>
+        <div class="progress-content">
+          <p>完成<strong>29项原子Skills</strong>灰度发布，同步规划新增<strong>13项Skill</strong>。梳理并建设九大类原子Skill，包括客户、知识库、企微、产品配置、市场分析、日常任务、行情资讯、通用工具、重点业务，已完成29项原子Skill灰度发布，并新增13项Skill，预计在<strong>6月底</strong>完成上线。</p>
+        </div>
+      </div>
+      <div class="indent-block">
+        <div class="progress-item">
+          <div class="progress-dot purple"></div>
+          <div class="progress-content">
+            <p><strong>股票投顾场景</strong> — 5月份启动并完成股票组合7项Skills规则梳理，包含组合持仓查询、收益表现查询、组合观点管理、调仓下单执行、客户服务线索等。完成灰度发布并持续测评调优。</p>
+          </div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-dot orange"></div>
+          <div class="progress-content">
+            <p><strong>算法交易场景</strong> — 5月启动算法交易三大核心场景找潜客、促进授权、敞口服务，规划建设6项Skills，由于依赖底层数据开发，当前完成<strong>1项Skill</strong>灰度发布，剩余5项Skills持续开发中，计划<strong>6月底</strong>全部完成交付验收。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 建设进展 - 企微ChatBOT建设 -->
+  <div class="section fade-in delay-4">
+    <div class="section-header">
+      <div class="section-icon purple">&#129302;</div>
+      <div class="section-title">建设进展 &mdash; 企微ChatBOT建设（提升投顾展业效率）</div>
+    </div>
+
+    <div class="sub-header">
+      <span class="plan-sub-title green">&#9889; 自动化执行助手</span>
+    </div>
+    <div class="card">
+      <div class="progress-item">
+        <div class="progress-dot green"></div>
+        <div class="progress-content">
+          <p>聚焦投顾重复性工作：MOT任务执行、企微添加认证等，引入RPA打造企微"企微ChatBOT——自动化执行助手"，可以实现经由投顾授权委托后，由自动化执行助手每日自动执行MOT任务，并基于业务线索，自动向客户发送企微好友申请。当前已完成上线，总计<strong>500个账号</strong>。</p>
+        </div>
+      </div>
+      <div class="indent-block">
+        <div class="num-block">
+          <p>&#8226; 截止当前，已面向<strong>18家分公司</strong>及客服中心分批开启应用，已开启<strong>350个账号</strong></p>
+          <p>&#8226; 累计自动执行<strong>4.63万条</strong>MOT任务，自动添加近<strong>3,200名</strong>企微好友</p>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-title">近5周运营趋势（加好友 vs MOT任务）</div>
+        <div class="chart-canvas-wrap">
+          <canvas id="opChart"></canvas>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>分公司/部门</th><th>账号数量</th><th>启用时间</th>
+              <th>成功加好友</th><th>MOT任务执行</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>深圳</td><td>30</td><td>4月14日</td><td>1,080</td><td>4,037</td></tr>
+            <tr><td>扬州</td><td>10</td><td>4月15日</td><td>83</td><td>1,370</td></tr>
+            <tr><td>四川</td><td>30</td><td>4月23日</td><td>228</td><td>6,961</td></tr>
+            <tr><td>湖北</td><td>35</td><td>4月24日</td><td>203</td><td>4,539</td></tr>
+            <tr><td>上海</td><td>40</td><td>4月28日</td><td>215</td><td>5,636</td></tr>
+            <tr><td>客服</td><td>20</td><td>4月29日</td><td>243</td><td>1,402</td></tr>
+            <tr><td>苏州</td><td>20</td><td>4月30日</td><td>145</td><td>669</td></tr>
+            <tr><td>广东</td><td>25</td><td>5月6日</td><td>367</td><td>7,263</td></tr>
+            <tr><td>安徽</td><td>10</td><td>5月7日</td><td>101</td><td>1,794</td></tr>
+            <tr><td>福建</td><td>10</td><td>5月7日</td><td>20</td><td>1,858</td></tr>
+            <tr><td>山东</td><td>10</td><td>5月8日</td><td>61</td><td>1,323</td></tr>
+            <tr><td>无锡</td><td>15</td><td>5月8日</td><td>11</td><td>1,028</td></tr>
+            <tr><td>黑龙江</td><td>10</td><td>5月11日</td><td>19</td><td>1,877</td></tr>
+            <tr><td>浙江</td><td>20</td><td>5月12日</td><td>43</td><td>2,150</td></tr>
+            <tr><td>西北</td><td>15</td><td>5月13日</td><td>116</td><td>1,939</td></tr>
+            <tr><td>湖南</td><td>10</td><td>5月13日</td><td>232</td><td>2,201</td></tr>
+            <tr><td>辽宁</td><td>15</td><td>6月15日</td><td>0</td><td>16</td></tr>
+            <tr><td>江西</td><td>10</td><td>6月16日</td><td>2</td><td>196</td></tr>
+            <tr><td>南通</td><td>15</td><td>6月16日</td><td>0</td><td>0</td></tr>
+            <tr class="total-row"><td>总计</td><td>350</td><td>—</td><td>3,169</td><td>46,259</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 18px;">
+        <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.85; margin-bottom: 12px;"><strong style="color: var(--text-primary);">单投顾TOP榜单（截至0615）</strong></p>
+        <div class="top-table-wrapper">
+          <table class="top-table">
+            <thead>
+              <tr>
+                <th>维度</th><th>排名</th><th>姓名</th><th>所属营业部</th><th>数据</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>自动添加好友</td><td>1</td><td>刘玮洁</td><td>深圳·科苑路百度国际大厦证券营业部</td><td>143人</td></tr>
+              <tr><td>自动添加好友</td><td>2</td><td>龚一凡</td><td>湖南·长沙滨江路证券营业部</td><td>118人</td></tr>
+              <tr><td>自动添加好友</td><td>3</td><td>易允怀</td><td>深圳·科苑路百度国际大厦证券营业部</td><td>106人</td></tr>
+              <tr><td>MOT任务自动执行</td><td>1</td><td>蚁建凯</td><td>广东·广州云城东路证券营业部</td><td>1,564次</td></tr>
+              <tr><td>MOT任务自动执行</td><td>2</td><td>蔡如意</td><td>上海·浦东新区乳山路证券营业部</td><td>1,465次</td></tr>
+              <tr><td>MOT任务自动执行</td><td>3</td><td>龚一凡</td><td>湖南·长沙滨江路证券营业部</td><td>1,246次</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="note-tag">&#128204; 备注：江西分公司前期已有部分员工开启试用</div>
+    </div>
+
+    <div class="sub-header">
+      <span class="plan-sub-title purple">&#128172; 智能聊天助手</span>
+    </div>
+    <div class="card">
+      <div class="progress-item">
+        <div class="progress-dot purple"></div>
+        <div class="progress-content">
+          <p>基于投顾服务半径大，客户企微咨询多的痛点，打造"企微ChatBOT-智能聊天助手"一期能力——<strong>自动生成客户回复</strong>，并于4月底发布测试环境。5月份持续对投顾与客户在企微真实会话进行抽样评测（约<strong>750个问题</strong>），针对问题识别有效性、回复答案效果、响应时间等方面逐步调优，截至上周共发布<strong>5个优化版本</strong>。</p>
+        </div>
+      </div>
+      <div class="indent-block">
+        <div class="num-block">
+          <p>&#8226; 当前开放首批分支投顾试用，共覆盖<strong>3家分公司、约20名投顾</strong></p>
+          <p>&#8226; 累计自动识别并生成答案的客户问题数<strong>2,262条</strong>，日均<strong>206条</strong></p>
+          <p>&#8226; 目前持续跟进投顾使用反馈并持续优化</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAClaw未来进化畅想 -->
+  <div class="section fade-in delay-5">
+    <div class="section-header">
+      <div class="section-icon purple">&#128640;</div>
+      <div class="section-title">TAClaw未来进化畅想</div>
+    </div>
+
+    <div class="future-card">
+      <h4>1. 基于TAClaw预制场景化工作流，辅助投顾快速运用AI能力</h4>
+      <p>单纯的问答窗口，对投顾使用要求较高，可能存在不知道问什么，或者具体业务的工作流一步一步如何来提问。我们将股票组合、算法交易、客户经营、资产配置、投研分析、内容生产等核心场景，构建从发现机会到执行落地的完整业务工作流。降低投顾使用门槛，快速上手。</p>
+      <div class="img-zoom-wrap" onclick="openLightbox(this)">
+        <img src="deploy0616/img_future_1.png" alt="场景化工作流" style="width: 100%; display: block;">
+        <span class="img-zoom-hint">点击放大</span>
+      </div>
+    </div>
+
+    <div class="future-card">
+      <h4>2. 沉淀优秀投顾工作台样板，支持新投顾/绩差投顾一键应用</h4>
+      <p>以优秀投顾案例为核心，构建最佳实践工作台样板，如创收最高投顾的工作台样板、服务半径大但服务覆盖率高的投顾工作台样板、重点业务开展得最好的投顾工作台样板，支持投顾一键复制到自己的工作台，让新投顾/绩差投顾快速获得优秀投顾的作业模式，推动经验共享、能力复制和服务效能持续提升。</p>
+      <div class="img-zoom-wrap" onclick="openLightbox(this)">
+        <img src="deploy0616/img_future_2.png" alt="工作台样板" style="width: 100%; display: block;">
+        <span class="img-zoom-hint">点击放大</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 问题及困难 -->
+  <div class="section fade-in delay-6">
+    <div class="section-header">
+      <div class="section-icon red">&#9888;&#65039;</div>
+      <div class="section-title">问题及困难</div>
+    </div>
+    <div class="card">
+      <div class="risk-item">
+        <p><strong>1. TAClaw为聊TA团队与人工智能中心协同基于Openclaw开源框架二次开发，当前仍存在定时任务不稳定、响应慢等较多功能及效果问题待解决、优化，但人力资源紧缺，整体进度较慢。</strong></p>
+      </div>
+      <div class="risk-item">
+        <p><strong>2. 受预算或硬件资源限制，TAClaw当前仅勉强申请100名投顾试用名额、企微ChatBOT执行助手仅支持500名投顾开放，较大影响AI能力向全体投顾队伍的推广运用。</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer fade-in delay-7">
+    <div class="footer-divider"></div>
+    TAClaw &amp; ChatBOT Project Team &middot; 截至 2026.06.16
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    var canvas = document.getElementById('opChart');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['0507-0513', '0514-0520', '0521-0527', '0528-0603', '0604-0610'],
+        datasets: [
+          {
+            type: 'bar',
+            label: '加好友（人）',
+            data: [433, 451, 425, 518, 454],
+            backgroundColor: 'rgba(59,107,245,0.65)',
+            borderColor: 'rgba(59,107,245,1)',
+            borderWidth: 1,
+            borderRadius: 6,
+            yAxisID: 'y'
+          },
+          {
+            type: 'line',
+            label: '执行MOT任务（次）',
+            data: [4078, 4773, 5131, 6997, 6978],
+            borderColor: 'rgba(245,158,11,1)',
+            backgroundColor: 'rgba(245,158,11,0.12)',
+            pointBackgroundColor: 'rgba(245,158,11,1)',
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            borderWidth: 2.5,
+            fill: false,
+            tension: 0.3,
+            yAxisID: 'y1'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'bottom', labels: { usePointStyle: true, padding: 18, font: { size: 12, family: "'Noto Sans SC',sans-serif" } } },
+          tooltip: {
+            backgroundColor: 'rgba(26,29,46,0.92)',
+            titleFont: { size: 13, family: "'Noto Sans SC',sans-serif" },
+            bodyFont: { size: 12, family: "'Noto Sans SC',sans-serif" },
+            padding: 12,
+            cornerRadius: 10,
+            callbacks: { label: function(ctx) { return ctx.dataset.label + '：' + ctx.parsed.y.toLocaleString(); } }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11, family: "'Noto Sans SC',sans-serif" } } },
+          y: { beginAtZero: true, position: 'left', title: { display: true, text: '加好友（人）', font: { size: 11, family: "'Noto Sans SC',sans-serif" } }, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 11, family: "'Noto Sans SC',sans-serif" } } },
+          y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'MOT任务（次）', font: { size: 11, family: "'Noto Sans SC',sans-serif" } }, grid: { drawOnChartArea: false }, ticks: { font: { size: 11, family: "'Noto Sans SC',sans-serif" } } }
+        }
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
